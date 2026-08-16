@@ -376,16 +376,25 @@
         $('#submit-window').val($('#window').val());
     }
 
+    function updateUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        params.set('date', $('#date').val());
+        params.set('window', $('#window').val());
+        window.history.replaceState(null, '', window.location.pathname + '?' + params.toString());
+    }
+
     $(function () {
         syncSubmitFields();
         fetchReport();
 
         $('#date').on('change', function () {
             syncSubmitFields();
+            updateUrlParams();
             fetchReport();
         });
         $('#window').on('change', function () {
             syncSubmitFields();
+            updateUrlParams();
             refreshWindows();
         });
         $('#controls').on('submit', function (e) {
