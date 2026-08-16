@@ -5,18 +5,4 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:80"
-    environment:
-      MAIL_MAILER: ${MAIL_MAILER:-}
-      MAIL_HOST: ${MAIL_HOST:-}
-      MAIL_PORT: ${MAIL_PORT:-}
-      MAIL_USERNAME: ${MAIL_USERNAME:-}
-      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
-      MAIL_ENCRYPTION: ${MAIL_ENCRYPTION:-}
-      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-}
-      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-}
-      PRICE_REGION: ${PRICE_REGION:-}
-      ELERING_API_BASE_URL: ${ELERING_API_BASE_URL:-}
-      CACHE_TTL_SECONDS: ${CACHE_TTL_SECONDS:-}
-      RECIPIENT_EMAIL: ${RECIPIENT_EMAIL:-}
-    volumes:
-      - .:/var/www/html
+    restart: unless-stopped

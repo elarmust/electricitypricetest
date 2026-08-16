@@ -64,6 +64,7 @@ final class SubmissionService {
                 : 'n/a',
             'sentAt' => $sentAt,
             'phpVersion' => PHP_VERSION,
+            'transmissionFee' => number_format((float) config('electricity.network_fee_eur_per_mwh'), 2),
         ];
 
         $recipient = (string) config('electricity.recipient_email');

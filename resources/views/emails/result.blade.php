@@ -13,15 +13,15 @@
                 'Valitud kuupäev' => $data['date'],
                 'Akna pikkus (h)' => $data['window'],
                 'Hinnapiirkond' => $data['region'],
-                'Keskmine hind (EUR/MWh, ilma KM)' => $data['average'],
-                'Keskmine hind (EUR/MWh, KM-ga)' => $data['averageVat'],
-                'Miinimum (EUR/MWh, ilma KM)' => $data['min'],
-                'Miinimum (EUR/MWh, KM-ga)' => $data['minVat'],
-                'Maksimum (EUR/MWh, ilma KM)' => $data['max'],
-                'Maksimum (EUR/MWh, KM-ga)' => $data['maxVat'],
+                'Keskmine hind (€/MWh, ilma KM)' => $data['average'],
+                'Keskmine hind (€/MWh, KM-ga)' => $data['averageVat'],
+                'Miinimum (€/MWh, ilma KM)' => $data['min'],
+                'Miinimum (€/MWh, KM-ga)' => $data['minVat'],
+                'Maksimum (€/MWh, ilma KM)' => $data['max'],
+                'Maksimum (€/MWh, KM-ga)' => $data['maxVat'],
                 'Odavaim aken (algus, Tallinn)' => $data['cheapestStart'],
-                'Odavaim aken (keskmine, EUR/MWh, ilma KM)' => $data['cheapestAvg'],
-                'Odavaim aken (keskmine, EUR/MWh, KM-ga)' => $data['cheapestAvgVat'],
+                'Odavaim aken (keskmine, €/MWh, ilma KM)' => $data['cheapestAvg'],
+                'Odavaim aken (keskmine, €/MWh, KM-ga)' => $data['cheapestAvgVat'],
                 'Saatmise aeg (Europe/Tallinn)' => $data['sentAt'],
                 'PHP versioon' => $data['phpVersion'],
             ] as $label => $value)
@@ -31,5 +31,6 @@
                 </tr>
             @endforeach
         </table>
+        <p>Kõik hinnad sisaldavad edastustasu {{ $data['transmissionFee'] }} €/mWh.</p>
     </body>
 </html>
