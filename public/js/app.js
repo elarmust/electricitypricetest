@@ -4,9 +4,8 @@
     let chart = null;
     let current = null;
 
-    function effCents(averageEurMwh, payload) {
-        const base = averageEurMwh + (payload.networkFeeEurMwh || 0) + (payload.marginEurMwh || 0);
-        return base / 10;
+    function effCents(baseEurMwh) {
+        return baseEurMwh / 10;
     }
 
     function inWindow(index, win) {
@@ -26,7 +25,7 @@
 
         const vat = payload.vatMultiplier || 1;
         const card = (title, eurMwh) => {
-            const noVat = effCents(eurMwh, payload);
+            const noVat = effCents(eurMwh);
             const withVat = noVat * vat;
             return `<div class="card"><span>${title}</span>` +
                 `<strong>${withVat.toFixed(2)} snt/kWh</strong>` +
@@ -57,7 +56,7 @@
             const start = payload.points[w.startIndex] ? payload.points[w.startIndex].label : '';
             const endIdx = w.startIndex + w.length - 1;
             const end = payload.points[endIdx] ? payload.points[endIdx].label : start;
-            const noVat = effCents(w.average, payload);
+            const noVat = effCents(w.average);
             const withVat = noVat * vat;
             return `<div class="window-card ${kind}">` +
                 `<span class="window-title">${title}</span>` +
@@ -71,11 +70,11 @@
     }
 
     function barColor(point, payload) {
-        if (point.eurMwh < payload.average) {
+        if (point.adjustedBase < payload.average) {
             return '#34d399';
         }
 
-        if (point.eurMwh > payload.average) {
+        if (point.adjustedBase > payload.average) {
             return '#f87171';
         }
 
@@ -152,7 +151,7 @@
         canvas.hidden = false;
 
         const labels = payload.points.map(p => p.label);
-        const centsVat = payload.points.map(p => effCents(p.eurMwh, payload) * payload.vatMultiplier);
+        const centsVat = payload.points.map(p => p.adjustedWithVat / 10);
         const colors = payload.points.map(p => barColor(p, payload));
 
         const config = {
@@ -216,11 +215,11 @@
             return 'row-expensive';
         }
 
-        if (point.eurMwh < payload.average) {
+        if (point.adjustedBase < payload.average) {
             return 'row-below';
         }
 
-        if (point.eurMwh > payload.average) {
+        if (point.adjustedBase > payload.average) {
             return 'row-above';
         }
 
@@ -238,14 +237,13 @@
             return;
         }
 
-        const vat = payload.vatMultiplier || 1;
         let rows = '';
         payload.points.forEach(function (point, index) {
-            const noVat = effCents(point.eurMwh, payload);
-            const withVat = noVat * vat;
+            const noVat = point.adjustedBase / 10;
+            const withVat = point.adjustedWithVat / 10;
             rows += `<tr class="${rowClass(index, point, payload)}">` +
                 `<td>${point.label}</td>` +
-                `<td>${point.eurMwh.toFixed(2)}</td>` +
+                `<td>${point.realBase.toFixed(2)}</td>` +
                 `<td>${noVat.toFixed(2)}</td>` +
                 `<td>${withVat.toFixed(2)}</td>` +
                 `</tr>`;
@@ -285,7 +283,7 @@
             for (let i = 0; i + windowPeriods <= count; i++) {
                 let sum = 0;
                 for (let j = i; j < i + windowPeriods; j++) {
-                    sum += arr[j].eurMwh;
+                    sum += arr[j].adjustedBase;
                 }
 
                 const average = sum / windowPeriods;
@@ -319,14 +317,18 @@
         let raw = payload.points;
         let arr;
         if (Array.isArray(raw)) {
-            arr = raw.map((eurMwh, i) => ({
+            arr = raw.map((pt, i) => ({
                 timestamp: (payload.startUtc ?? 0) + i * (payload.periodSeconds || 3600),
-                eurMwh: eurMwh,
+                realBase: pt.realBase,
+                adjustedBase: pt.adjustedBase,
+                adjustedWithVat: pt.adjustedWithVat,
             }));
         } else {
-            arr = Object.entries(raw).map(([ts, eurMwh]) => ({
+            arr = Object.entries(raw).map(([ts, pt]) => ({
                 timestamp: Number(ts),
-                eurMwh: eurMwh,
+                realBase: pt.realBase,
+                adjustedBase: pt.adjustedBase,
+                adjustedWithVat: pt.adjustedWithVat,
             }));
         }
 
@@ -391,6 +393,7 @@
             .attr('aria-expanded', String(nowExpanded))
             .find('.arrow')
             .text(nowExpanded ? '▾' : '▸');
+        $('.table-toggle-close').prop('hidden', !nowExpanded);
     }
 
     function handleSubmit(e) {

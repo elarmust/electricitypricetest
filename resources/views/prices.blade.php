@@ -43,12 +43,12 @@
                 <div class="table-wrap" id="prices-table-body" hidden>
                     <table class="prices">
                         <thead>
-                            <tr><th>Algus (Tallinn)</th><th>€/MWh</th><th>snt/kWh (ilma KM)</th><th>snt/kWh (KM-ga)</th></tr>
+                            <tr><th>Algus (Tallinn)</th><th>€/MWh (spot)</th><th>snt/kWh (ilma KM)</th><th>snt/kWh (KM-ga)</th></tr>
                         </thead>
                         <tbody></tbody>
                     </table>
                 </div>
-                <button type="button" class="table-toggle" data-target="prices-table-body" aria-expanded="false">
+                <button type="button" class="table-toggle table-toggle-close" data-target="prices-table-body" aria-expanded="false" hidden>
                     <span class="arrow">&#9656;</span> Perioodide hinnad
                 </button>
             </section>

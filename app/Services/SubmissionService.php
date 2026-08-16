@@ -30,6 +30,10 @@ final class SubmissionService {
         $stats = $report->statistics;
         $prices = $report->prices->all();
 
+        $vatMultiplier = 1 + (float) config('electricity.vat_rate', 0);
+        $base = fn (float $eurMwh): float => $eurMwh;
+        $withVat = fn (float $eurMwh): float => $eurMwh * $vatMultiplier;
+
         $cheapestStart = $stats->cheapestWindow !== null
             ? (new DateTimeImmutable('@' . $prices[$stats->cheapestWindow->startIndex]->timestampUtc))->setTimezone($this->tz)->format('Y-m-d H:i')
             : 'n/a';
@@ -44,12 +48,19 @@ final class SubmissionService {
             'commit' => $this->resolveCommitSha(),
             'date' => $report->dateYmd,
             'region' => $report->region,
-            'average' => number_format($stats->averagePriceEurPerMwh, 2),
-            'min' => number_format($stats->minPriceEurPerMwh, 2),
-            'max' => number_format($stats->maxPriceEurPerMwh, 2),
+            'window' => $report->windowHours,
+            'average' => number_format($base($stats->averagePriceEurPerMwh), 2),
+            'averageVat' => number_format($withVat($stats->averagePriceEurPerMwh), 2),
+            'min' => number_format($base($stats->minPriceEurPerMwh), 2),
+            'minVat' => number_format($withVat($stats->minPriceEurPerMwh), 2),
+            'max' => number_format($base($stats->maxPriceEurPerMwh), 2),
+            'maxVat' => number_format($withVat($stats->maxPriceEurPerMwh), 2),
             'cheapestStart' => $cheapestStart,
             'cheapestAvg' => $stats->cheapestWindow !== null
-                ? number_format($stats->cheapestWindow->averagePriceEurPerMwh, 2)
+                ? number_format($base($stats->cheapestWindow->averagePriceEurPerMwh), 2)
+                : 'n/a',
+            'cheapestAvgVat' => $stats->cheapestWindow !== null
+                ? number_format($withVat($stats->cheapestWindow->averagePriceEurPerMwh), 2)
                 : 'n/a',
             'sentAt' => $sentAt,
             'phpVersion' => PHP_VERSION,

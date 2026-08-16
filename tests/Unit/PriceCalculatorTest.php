@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use App\Domain\Price;
-use App\Domain\PriceCalculator;
 use App\Domain\PriceCollection;
+use App\Utils\PriceCalculator;
 use PHPUnit\Framework\TestCase;
 
 final class PriceCalculatorTest extends TestCase {
@@ -18,7 +18,7 @@ final class PriceCalculatorTest extends TestCase {
 
     private function collection(array $points): PriceCollection {
         return new PriceCollection(array_map(
-            static fn (array $p): Price => new Price($p[0], $p[1]),
+            static fn (array $p): Price => Price::fromSpot($p[0], $p[1]),
             $points
         ));
     }

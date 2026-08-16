@@ -20,7 +20,11 @@ final class ReportPayloadService {
 
         $points = [];
         foreach ($all as $p) {
-            $points[$p->timestampUtc] = round($p->priceEurPerMwh, 4);
+            $points[$p->timestampUtc] = [
+                'realBase' => round($p->realBaseEurPerMwh, 4),
+                'adjustedBase' => round($p->adjustedBaseEurPerMwh, 4),
+                'adjustedWithVat' => round($p->adjustedWithVatEurPerMwh, 4),
+            ];
         }
 
         return [

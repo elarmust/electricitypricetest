@@ -21,8 +21,8 @@ final class SubmissionController extends Controller {
     }
 
     public function store(Request $request): JsonResponse {
-        $date = (string) ($request->query('date') ?? $this->boundaries->todayYmd());
-        $window = max(1, min(6, (int) ($request->query('window') ?? 1)));
+        $date = (string) ($request->input('date') ?? $this->boundaries->todayYmd());
+        $window = max(1, min(6, (int) ($request->input('window') ?? 1)));
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:120'],

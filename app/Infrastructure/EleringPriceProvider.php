@@ -56,7 +56,7 @@ final class EleringPriceProvider implements PriceProviderInterface {
                     continue;
                 }
 
-                $prices[] = new Price((int) $point['timestamp'], (float) $point['price']);
+                $prices[] = Price::fromSpot((int) $point['timestamp'], (float) $point['price']);
             }
 
             return new PriceCollection($prices);

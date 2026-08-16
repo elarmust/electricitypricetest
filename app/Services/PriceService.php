@@ -6,9 +6,9 @@ namespace App\Services;
 
 use App\Domain\DayReport;
 use App\Domain\DayStatistics;
-use App\Domain\PriceCalculator;
 use App\Domain\PriceProviderInterface;
 use App\Utils\DayBoundaries;
+use App\Utils\PriceCalculator;
 use RuntimeException;
 
 /**
@@ -35,7 +35,12 @@ final class PriceService {
         $range = $this->boundaries->forDate($dateYmd);
         $region = (string) config('electricity.region', 'EE');
 
-        $prices = $this->provider->getPrices($region, $range['startUtc'], $range['endUtc']);
+        $rawPrices = $this->provider->getPrices($region, $range['startUtc'], $range['endUtc']);
+
+        $networkFee = (float) config('electricity.network_fee_eur_per_mwh', 0.0);
+        $margin = (float) config('electricity.supplier_margin_eur_per_mwh', 0.0);
+        $vatMultiplier = 1.0 + (float) config('electricity.vat_rate', 0.0);
+        $prices = $rawPrices->enrichBilling($networkFee, $margin, $vatMultiplier);
 
         if ($prices->count() === 0) {
             return new DayReport(

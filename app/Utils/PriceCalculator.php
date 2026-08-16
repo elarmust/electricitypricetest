@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Domain;
+namespace App\Utils;
+
+use App\Domain\DayStatistics;
+use App\Domain\PriceCollection;
+use App\Domain\Window;
 
 /**
  * Pure calculation logic.
@@ -23,7 +27,7 @@ final class PriceCalculator {
         $sum = 0.0;
 
         foreach ($prices as $price) {
-            $value = $price->priceEurPerMwh;
+            $value = $price->adjustedBaseEurPerMwh;
             $sum += $value;
             if ($min === null || $value < $min) {
                 $min = $value;
@@ -84,7 +88,7 @@ final class PriceCalculator {
         for ($i = 0; $i + $windowPeriods <= $count; $i++) {
             $sum = 0.0;
             for ($j = $i; $j < $i + $windowPeriods; $j++) {
-                $sum += $all[$j]->priceEurPerMwh;
+                $sum += $all[$j]->adjustedBaseEurPerMwh;
             }
 
             $average = $sum / $windowPeriods;
