@@ -1,0 +1,12 @@
+vendor
+node_modules
+storage/*.key
+bootstrap/cache/*.php
+.env
+.env.backup
+.phpunit.cache
+Dockerfile
+docker-compose.yml
+.dockerignore
+.git
+.github
