@@ -22,18 +22,23 @@ final class PriceCalculator {
             return new DayStatistics(0.0, 0.0, 0.0, null, null);
         }
 
-        $min = null;
-        $max = null;
+        $first = $prices->first();
+        if ($first === null) {
+            return new DayStatistics(0.0, 0.0, 0.0, null, null);
+        }
+
+        $min = $first->adjustedBaseEurPerMwh;
+        $max = $first->adjustedBaseEurPerMwh;
         $sum = 0.0;
 
         foreach ($prices as $price) {
             $value = $price->adjustedBaseEurPerMwh;
             $sum += $value;
-            if ($min === null || $value < $min) {
+            if ($value < $min) {
                 $min = $value;
             }
 
-            if ($max === null || $value > $max) {
+            if ($value > $max) {
                 $max = $value;
             }
         }

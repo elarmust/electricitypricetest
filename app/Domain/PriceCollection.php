@@ -10,6 +10,8 @@ use Traversable;
 
 /**
  * Immutable, ordered collection of Price points for a single day.
+ *
+ * @implements IteratorAggregate<int, Price>
  */
 final class PriceCollection implements Countable, IteratorAggregate {
     /** @var list<Price> */

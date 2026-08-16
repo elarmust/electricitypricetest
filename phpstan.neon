@@ -1,0 +1,24 @@
+includes:
+    - ./vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app
+        - tests
+    level: 9
+
+    # Larastan: infer config() return types from config files
+    checkConfigTypes: true
+
+    # Strictness toggles
+    checkExplicitMixed: true
+    checkMissingCallableSignature: true
+    checkUninitializedProperties: true
+    reportMaybes: false
+
+    # Test properties are assigned in setUp(); PHPStan cannot see that, so the
+    # uninitialized-property check is relaxed for tests only (app keeps it strict).
+    ignoreErrors:
+        -
+            identifier: property.uninitialized
+            path: tests/*

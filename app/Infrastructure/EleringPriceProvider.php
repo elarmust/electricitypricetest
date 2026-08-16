@@ -50,18 +50,29 @@ final class EleringPriceProvider implements PriceProviderInterface {
                 throw new RuntimeException('Elering API returned an unsuccessful response.');
             }
 
-            $series = $decoded['data'][strtolower($region)] ?? [];
+            $data = $decoded['data'] ?? [];
+            if (!is_array($data)) {
+                throw new RuntimeException('Elering API returned a malformed data section.');
+            }
+
+            $series = $data[strtolower($region)] ?? [];
             if (!is_array($series)) {
                 throw new RuntimeException('No price series present for region ' . $region);
             }
 
             $prices = [];
             foreach ($series as $point) {
-                if (!isset($point['timestamp'], $point['price'])) {
+                if (!is_array($point)) {
                     continue;
                 }
 
-                $prices[] = Price::fromSpot((int) $point['timestamp'], (float) $point['price']);
+                $timestamp = $point['timestamp'] ?? null;
+                $price = $point['price'] ?? null;
+                if (!is_int($timestamp) || !is_numeric($price)) {
+                    continue;
+                }
+
+                $prices[] = Price::fromSpot($timestamp, (float) $price);
             }
 
             return new PriceCollection($prices);

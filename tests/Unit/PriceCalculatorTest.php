@@ -16,6 +16,9 @@ final class PriceCalculatorTest extends TestCase {
         $this->calculator = new PriceCalculator();
     }
 
+    /**
+     * @param  list<array{0: int, 1: float}>  $points
+     */
     private function collection(array $points): PriceCollection {
         return new PriceCollection(array_map(
             static fn (array $p): Price => Price::fromSpot($p[0], $p[1]),
