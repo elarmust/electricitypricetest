@@ -9,7 +9,6 @@ use App\Domain\DayStatistics;
 use App\Domain\PriceProviderInterface;
 use App\Utils\DayBoundaries;
 use App\Utils\PriceCalculator;
-use RuntimeException;
 
 /**
  * Orchestrates fetching, caching and calculation for a requested day/region,
@@ -24,14 +23,6 @@ final class PriceService {
     }
 
     public function getDayReport(string $dateYmd, int $windowHours): DayReport {
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateYmd)) {
-            throw new RuntimeException('Invalid date format. Expected YYYY-MM-DD.');
-        }
-
-        if ($windowHours < 1 || $windowHours > 6) {
-            throw new RuntimeException('Window length must be between 1 and 6 hours.');
-        }
-
         $range = $this->boundaries->forDate($dateYmd);
         $region = (string) config('electricity.region', 'EE');
 

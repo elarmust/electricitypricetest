@@ -370,7 +370,42 @@
     function fetchReport() {
         const date = $('#date').val();
         const windowHours = $('#window').val();
-        $.getJSON('/api/prices', { date: date, window: windowHours }, applyPayload);
+        $.getJSON('/api/prices', { date: date, window: windowHours })
+            .done(applyPayload)
+            .fail(function (xhr) {
+                const json = xhr.responseJSON || {};
+                showError(json.message || 'Hindade laadimine ebaõnnestus.');
+            });
+    }
+
+    function showError(message) {
+        const canvas = document.getElementById('priceChart');
+        const chartMsg = document.getElementById('chart-message');
+        if (canvas) {
+            canvas.hidden = true;
+        }
+
+        if (chartMsg) {
+            chartMsg.hidden = false;
+            chartMsg.textContent = message;
+        }
+
+        if (chart) {
+            chart.destroy();
+            chart = null;
+        }
+
+        const tbody = $('.prices tbody');
+        if (tbody.length) {
+            tbody.html('<tr><td colspan="4">' + message + '</td></tr>');
+        }
+
+        ['cards', 'windows', 'submit', 'prices-table'].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.hidden = true;
+            }
+        });
     }
 
     function syncSubmitFields() {

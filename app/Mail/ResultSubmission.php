@@ -27,7 +27,7 @@ class ResultSubmission extends Mailable {
     }
 
     public function envelope(): Envelope {
-        return new Envelope(subject: 'Electricity price test result submission');
+        return new Envelope(subject: 'Spotihindade rakendus');
     }
 
     public function content(): Content {

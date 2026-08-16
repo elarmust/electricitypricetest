@@ -7,6 +7,7 @@ namespace App\Infrastructure;
 use App\Domain\Price;
 use App\Domain\PriceCollection;
 use App\Domain\PriceProviderInterface;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
 
@@ -34,7 +35,11 @@ final class EleringPriceProvider implements PriceProviderInterface {
                 strtolower($region),
             );
 
-            $response = Http::acceptJson()->timeout(10)->get($url);
+            try {
+                $response = Http::acceptJson()->timeout(10)->get($url);
+            } catch (ConnectionException $e) {
+                throw new RuntimeException('Elering API connection failed: ' . $e->getMessage(), 0, $e);
+            }
 
             if (!$response->successful()) {
                 throw new RuntimeException('Elering API request failed with status ' . $response->status());
