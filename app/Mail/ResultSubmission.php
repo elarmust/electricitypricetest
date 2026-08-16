@@ -21,7 +21,7 @@ class ResultSubmission extends Mailable {
     use SerializesModels;
 
     /**
-     * @param array<string, string> $data
+     * @param  array<string, string>  $data
      */
     public function __construct(public array $data) {
     }

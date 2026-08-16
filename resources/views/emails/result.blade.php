@@ -8,7 +8,7 @@
                 'Kandidaadi nimi' => $data['name'],
                 'E-post' => $data['email'],
                 'Telefon' => $data['phone'],
-                'GitHub repositoorium' => $data['repo'],
+                'GitHub repo' => $data['repo'],
                 'Viimane commit (SHA)' => $data['commit'],
                 'Valitud kuupäev' => $data['date'],
                 'Hinnapiirkond' => $data['region'],

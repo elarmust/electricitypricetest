@@ -7,7 +7,6 @@ namespace App\Services;
 use App\Domain\DayReport;
 use App\Domain\DayStatistics;
 use App\Domain\PriceCalculator;
-use App\Domain\PriceCollection;
 use App\Domain\PriceProviderInterface;
 use App\Utils\DayBoundaries;
 use RuntimeException;

@@ -178,3 +178,31 @@ ul.errors { color: var(--expensive); }
     padding: 1.5rem 0.5rem;
 }
 #chart-message:empty { display: none; }
+
+.table-toggle {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 0.95rem;
+    padding: 0.5rem 0.75rem;
+    margin: 0.5rem 0;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.table-toggle:hover { border-color: var(--accent); }
+
+.table-toggle .arrow {
+    display: inline-block;
+    width: 1rem;
+    text-align: center;
+    color: var(--muted);
+}
+
+#submit-status, #submit-error {
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}

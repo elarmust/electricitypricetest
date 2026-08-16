@@ -9,7 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Services\PriceService;
 use App\Services\SubmissionService;
 use App\Utils\DayBoundaries;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 final class SubmissionController extends Controller {
@@ -20,7 +20,7 @@ final class SubmissionController extends Controller {
     ) {
     }
 
-    public function store(Request $request): RedirectResponse {
+    public function store(Request $request): JsonResponse {
         $date = (string) ($request->query('date') ?? $this->boundaries->todayYmd());
         $window = max(1, min(6, (int) ($request->query('window') ?? 1)));
 
@@ -43,13 +43,16 @@ final class SubmissionController extends Controller {
 
         try {
             $this->submissionService->submit($submission, $report);
-            return redirect()
-                ->route('prices', ['date' => $date, 'window' => $window])
-                ->with('status', 'Tulemus saadetud edukalt aadressile elarmust98@gmail.com.');
         } catch (\RuntimeException $e) {
-            return redirect()
-                ->route('prices', ['date' => $date, 'window' => $window])
-                ->with('error', 'Saatmine ebaõnnestus: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Saatmine ebaõnnestus: ' . $e->getMessage(),
+            ], 422);
         }
+
+        $recipient = (string) config('electricity.recipient_email');
+
+        return response()->json([
+            'status' => 'Tulemus saadetud edukalt aadressile ' . $recipient . '.',
+        ]);
     }
 }

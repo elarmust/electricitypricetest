@@ -31,7 +31,7 @@ final class SubmissionService {
         $prices = $report->prices->all();
 
         $cheapestStart = $stats->cheapestWindow !== null
-            ? new DateTimeImmutable('@' . $prices[$stats->cheapestWindow->startIndex]->timestampUtc)->setTimezone($this->tz)->format('Y-m-d H:i')
+            ? (new DateTimeImmutable('@' . $prices[$stats->cheapestWindow->startIndex]->timestampUtc))->setTimezone($this->tz)->format('Y-m-d H:i')
             : 'n/a';
 
         $sentAt = (new DateTimeImmutable('now', $this->tz))->format('Y-m-d H:i:s');
@@ -60,15 +60,24 @@ final class SubmissionService {
         Mail::to($recipient)->send(new ResultSubmission($data));
     }
 
-    private function resolveCommitSha(): string
-    {
+    private function resolveCommitSha(): string {
         $sha = (string) config('electricity.github_commit_sha', '');
         if ($sha !== '') {
             return $sha;
         }
 
-        $git = @shell_exec('git rev-parse HEAD 2>/dev/null');
+        $head = base_path('.git/HEAD');
+        if (!is_file($head)) {
+            return '';
+        }
 
-        return $git ? trim($git) : 'unknown';
+        $ref = trim((string) file_get_contents($head));
+        if (!str_starts_with($ref, 'ref:')) {
+            return $ref;
+        }
+
+        $refFile = base_path('.git/' . trim(substr($ref, 4)));
+
+        return is_file($refFile) ? trim((string) file_get_contents($refFile)) : '';
     }
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\DayReport;
+use App\Domain\DayStatistics;
+use App\Domain\PriceCollection;
 use App\Http\Controllers\Controller;
 use App\Services\PriceService;
 use App\Services\ReportPayloadService;
@@ -26,12 +29,12 @@ final class PriceController extends Controller {
         try {
             $report = $this->priceService->getDayReport($date, $window);
         } catch (\RuntimeException $e) {
-            $report = new \App\Domain\DayReport(
+            $report = new DayReport(
                 $date,
                 (string) config('electricity.region', 'EE'),
                 $window,
-                new \App\Domain\PriceCollection([]),
-                new \App\Domain\DayStatistics(0.0, 0.0, 0.0, null, null),
+                new PriceCollection([]),
+                new DayStatistics(0.0, 0.0, 0.0, null, null),
             );
         }
 

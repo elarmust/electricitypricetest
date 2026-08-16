@@ -16,7 +16,7 @@ final class PriceCollection implements Countable, IteratorAggregate {
     private readonly array $prices;
 
     /**
-     * @param list<Price> $prices
+     * @param  list<Price>  $prices
      */
     public function __construct(array $prices) {
         $this->prices = $prices;
@@ -58,7 +58,7 @@ final class PriceCollection implements Countable, IteratorAggregate {
     }
 
     /**
-     * @param list<array{timestamp:int, price:float}> $data
+     * @param  list<array{timestamp:int, price:float}>  $data
      */
     public static function fromArray(array $data): self {
         return new self(array_map(

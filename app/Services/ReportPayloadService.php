@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Domain\DayReport;
+use App\Domain\Price;
 use App\Domain\Window;
 
 /**
@@ -43,7 +44,7 @@ final class ReportPayloadService {
     }
 
     /**
-     * @param array<int, \App\Domain\Price> $prices
+     * @param  array<int, Price>  $prices
      * @return array<string, mixed>|null
      */
     private function windowData(?Window $window, array $prices): ?array {

@@ -9,5 +9,4 @@ return [
     'supplier_margin_eur_per_mwh' => (float) env('SUPPLIER_MARGIN_EUR_PER_MWH', 0),
     'recipient_email' => env('RECIPIENT_EMAIL', ''),
     'github_repo_url' => env('GITHUB_REPO_URL', ''),
-    'github_commit_sha' => env('GITHUB_COMMIT_SHA', ''),
 ];

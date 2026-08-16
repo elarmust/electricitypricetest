@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class DayBoundariesTest extends TestCase {
     private DayBoundaries $boundaries;
+
     private DateTimeZone $tz;
 
     protected function setUp(): void {

@@ -342,7 +342,7 @@
         ['cards', 'windows', 'submit', 'prices-table'].forEach((id) => {
             const el = document.getElementById(id);
             if (el) {
-                el.style.display = empty ? 'none' : '';
+                el.hidden = empty;
             }
         });
 
@@ -383,6 +383,51 @@
         window.history.replaceState(null, '', window.location.pathname + '?' + params.toString());
     }
 
+    function togglePriceTable() {
+        const $body = $('#prices-table-body');
+        const nowExpanded = $body.prop('hidden');
+        $body.prop('hidden', !nowExpanded);
+        $('.table-toggle')
+            .attr('aria-expanded', String(nowExpanded))
+            .find('.arrow')
+            .text(nowExpanded ? '▾' : '▸');
+    }
+
+    function handleSubmit(e) {
+        e.preventDefault();
+        const $form = $('#submitForm');
+        const $status = $('#submit-status');
+        const $error = $('#submit-error');
+
+        $status.prop('hidden', true).text('');
+        $error.prop('hidden', true).text('');
+        $('#err-name, #err-email, #err-phone').prop('hidden', true).text('');
+
+        $.ajax({
+            url: $form.attr('action'),
+            method: 'POST',
+            data: $form.serialize(),
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            success(resp) {
+                $status.text(resp.status || 'Tulemus saadetud.').prop('hidden', false);
+                $form[0].reset();
+                syncSubmitFields();
+            },
+            error(xhr) {
+                const json = xhr.responseJSON || {};
+                if (xhr.status === 422 && json.errors) {
+                    ['name', 'email', 'phone'].forEach((field) => {
+                        if (json.errors[field]) {
+                            $('#err-' + field).text(json.errors[field][0]).prop('hidden', false);
+                        }
+                    });
+                } else {
+                    $error.text(json.error || 'Saatmine ebaõnnestus.').prop('hidden', false);
+                }
+            },
+        });
+    }
+
     $(function () {
         syncSubmitFields();
         fetchReport();
@@ -401,5 +446,7 @@
             e.preventDefault();
             fetchReport();
         });
+        $('.table-toggle').on('click', togglePriceTable);
+        $('#submitForm').on('submit', handleSubmit);
     });
 })(jQuery);

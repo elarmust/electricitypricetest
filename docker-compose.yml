@@ -4,29 +4,19 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:80"
+      - "8000:80"
     environment:
-      # Laravel mail configuration (MAIL_* keys expected by config/mail.php).
-      MAIL_MAILER: ${MAIL_MAILER:-smtp}
-      MAIL_HOST: ${MAIL_HOST:-mailhog}
-      MAIL_PORT: ${MAIL_PORT:-1025}
+      MAIL_MAILER: ${MAIL_MAILER:-}
+      MAIL_HOST: ${MAIL_HOST:-}
+      MAIL_PORT: ${MAIL_PORT:-}
       MAIL_USERNAME: ${MAIL_USERNAME:-}
       MAIL_PASSWORD: ${MAIL_PASSWORD:-}
       MAIL_ENCRYPTION: ${MAIL_ENCRYPTION:-}
-      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-no-reply@example.com}
-      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-Electricity Price Test}
-      # Application-specific settings (overrides baked into the image .env).
-      PRICE_REGION: ${PRICE_REGION:-EE}
-      ELERING_API_BASE_URL: ${ELERING_API_BASE_URL:-https://dashboard.elering.ee/api/nps/price}
-      CACHE_TTL_SECONDS: ${CACHE_TTL_SECONDS:-1800}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-}
+      PRICE_REGION: ${PRICE_REGION:-}
+      ELERING_API_BASE_URL: ${ELERING_API_BASE_URL:-}
+      CACHE_TTL_SECONDS: ${CACHE_TTL_SECONDS:-}
       RECIPIENT_EMAIL: ${RECIPIENT_EMAIL:-}
     volumes:
       - .:/var/www/html
-    # For local mail testing without credentials, run Mailhog alongside:
-    # depends_on:
-    #   - mailhog
-    # mailhog:
-    #   image: mailhog/mailhog
-    #   ports:
-    #     - "1025:1025"
-    #     - "8025:8025"

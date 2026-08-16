@@ -36,34 +36,41 @@
                 <canvas id="priceChart" height="160"></canvas>
                 <p class="error" id="chart-message" hidden></p>
             </section>
-            <section id="prices-table">
-                <h2>Perioodide hinnad</h2>
-                <div class="table-wrap">
-                <table class="prices">
-                    <thead>
-                        <tr><th>Algus (Tallinn)</th><th>€/MWh</th><th>snt/kWh (ilma KM)</th><th>snt/kWh (KM-ga)</th></tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
+            <section id="prices-table" hidden>
+                <button type="button" class="table-toggle" data-target="prices-table-body" aria-expanded="false">
+                    <span class="arrow">&#9656;</span> Perioodide hinnad
+                </button>
+                <div class="table-wrap" id="prices-table-body" hidden>
+                    <table class="prices">
+                        <thead>
+                            <tr><th>Algus (Tallinn)</th><th>€/MWh</th><th>snt/kWh (ilma KM)</th><th>snt/kWh (KM-ga)</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <button type="button" class="table-toggle" data-target="prices-table-body" aria-expanded="false">
+                    <span class="arrow">&#9656;</span> Perioodide hinnad
+                </button>
             </section>
             <section class="submit" id="submit">
                 <h2>Saada tulemus</h2>
+                <div class="success" id="submit-status" hidden></div>
+                <div class="error" id="submit-error" hidden></div>
                 <form method="post" action="{{ route('api.submissions') }}" id="submitForm">
                     @csrf
                     <input type="hidden" name="date" id="submit-date" value="{{ $selectedDate }}">
                     <input type="hidden" name="window" id="submit-window" value="{{ $windowHours }}">
                     <label>Nimi
                         <input type="text" name="name" value="{{ old('name') }}">
-                        @error('name')<span class="error">{{ $message }}</span>@enderror
+                        <span class="error" id="err-name" hidden></span>
                     </label>
                     <label>E-post
                         <input type="email" name="email" value="{{ old('email') }}">
-                        @error('email')<span class="error">{{ $message }}</span>@enderror
+                        <span class="error" id="err-email" hidden></span>
                     </label>
                     <label>Telefon
                         <input type="tel" name="phone" value="{{ old('phone') }}">
-                        @error('phone')<span class="error">{{ $message }}</span>@enderror
+                        <span class="error" id="err-phone" hidden></span>
                     </label>
                     <button type="submit">Saada tulemus</button>
                 </form>

@@ -32,6 +32,6 @@ final class DayBoundaries {
     }
 
     public function todayYmd(): string {
-        return new DateTimeImmutable('now', $this->tz)->format('Y-m-d');
+        return (new DateTimeImmutable('now', $this->tz))->format('Y-m-d');
     }
 }
